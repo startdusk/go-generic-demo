@@ -3,6 +3,9 @@ package business
 import (
 	"bytes"
 	"fmt"
+	"math"
+
+	"golang.org/x/exp/slices"
 )
 
 type Solar struct {
@@ -70,4 +73,10 @@ func PrintSlice2[T Energy, S ~[]T](tt S) string {
 type Energy interface {
 	Wind | Solar
 	Cost() float64
+}
+
+func SortByCost[T Energy](a []T) {
+	slices.SortFunc(a, func(a, b T) bool {
+		return a.Cost() < b.Cost() || math.IsNaN(a.Cost()) && !math.IsNaN(b.Cost())
+	})
 }
